@@ -27,6 +27,7 @@ class CarInterface(CarInterfaceBase):
       # Shared configuration for CAN-FD cars
       ret.experimentalLongitudinalAvailable = candidate not in (CANFD_UNSUPPORTED_LONGITUDINAL_CAR | CANFD_RADAR_SCC_CAR)
       ret.enableBsm = 0x1e5 in fingerprint[CAN.ECAN]
+      ret.flags |= HyundaiFlags.ENABLE_BLINKERS
 
       if 0x105 in fingerprint[CAN.ECAN]:
         ret.flags |= HyundaiFlags.HYBRID.value
@@ -136,6 +137,8 @@ class CarInterface(CarInterfaceBase):
       if CP.flags & HyundaiFlags.CANFD_LKA_STEERING.value:
         addr, bus = 0x730, CanBus(CP).ECAN
       disable_ecu(can_recv, can_send, bus=bus, addr=addr, com_cont_req=b'\x28\x83\x01')
+
+    CP.flags |= HyundaiFlags.ENABLE_BLINKERS
 
     # for blinkers
     if CP.flags & HyundaiFlags.ENABLE_BLINKERS:
