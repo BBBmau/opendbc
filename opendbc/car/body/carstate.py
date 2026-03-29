@@ -34,4 +34,8 @@ class CarState(CarStateBase):
 
   @staticmethod
   def get_can_parsers(CP):
-    return {Bus.main: CANParser(DBC[CP.carFingerprint][Bus.main], [], 2 if CP.carFingerprint == CAR.COMMA_BODY_V2 else 0)}
+    messages = [("MOTORS_DATA", float('nan'))]
+    if CP.carFingerprint == CAR.COMMA_BODY_V1:
+      messages += [("VAR_VALUES", float('nan')), ("BODY_DATA", float('nan'))]
+    bus = 2 if CP.carFingerprint == CAR.COMMA_BODY_V2 else 0
+    return {Bus.main: CANParser(DBC[CP.carFingerprint][Bus.main], messages, bus)}
